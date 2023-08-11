@@ -7,6 +7,7 @@ from torch.autograd import Function
 from torch.autograd.function import once_differentiable
 
 from ..utils import ext_loader
+from .utils import bf16_compatible
 
 ext_module = ext_loader.load_ext('_ext', [
     'sigmoid_focal_loss_forward', 'sigmoid_focal_loss_backward',
@@ -17,6 +18,7 @@ ext_module = ext_loader.load_ext('_ext', [
 class SigmoidFocalLossFunction(Function):
 
     @staticmethod
+    @bf16_compatible('input')
     def forward(ctx,
                 input: torch.Tensor,
                 target: Union[torch.LongTensor, torch.cuda.LongTensor],
@@ -24,7 +26,6 @@ class SigmoidFocalLossFunction(Function):
                 alpha: float = 0.25,
                 weight: Optional[torch.Tensor] = None,
                 reduction: str = 'mean') -> torch.Tensor:
-
         assert target.dtype == torch.long
         assert input.dim() == 2
         assert target.dim() == 1
@@ -54,6 +55,7 @@ class SigmoidFocalLossFunction(Function):
 
     @staticmethod
     @once_differentiable
+    @bf16_compatible('grad_output')
     def backward(ctx, grad_output: torch.Tensor) -> tuple:
         input, target, weight = ctx.saved_tensors
 

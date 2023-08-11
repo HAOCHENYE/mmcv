@@ -9,6 +9,7 @@ from torch.autograd.function import once_differentiable
 from torch.nn.modules.utils import _pair
 
 from ..utils import ext_loader
+from .utils import bf16_compatible
 
 ext_module = ext_loader.load_ext('_ext',
                                  ['roi_align_forward', 'roi_align_backward'])
@@ -59,6 +60,7 @@ class RoIAlignFunction(Function):
             mode_s=pool_mode)
 
     @staticmethod
+    @bf16_compatible('input', 'rois')
     def forward(ctx: Any,
                 input: torch.Tensor,
                 rois: torch.Tensor,
@@ -105,6 +107,7 @@ class RoIAlignFunction(Function):
 
     @staticmethod
     @once_differentiable
+    @bf16_compatible('grad_output')
     def backward(ctx: Any, grad_output: torch.Tensor) -> tuple:
         rois, argmax_y, argmax_x = ctx.saved_tensors
         grad_input = grad_output.new_zeros(ctx.input_shape)

@@ -14,6 +14,7 @@ from torch.autograd.function import Function, once_differentiable
 
 from mmcv.utils import IS_CUDA_AVAILABLE, IS_MLU_AVAILABLE
 from ..utils import ext_loader
+from .utils import bf16_compatible
 
 ext_module = ext_loader.load_ext(
     '_ext', ['ms_deform_attn_backward', 'ms_deform_attn_forward'])
@@ -22,6 +23,7 @@ ext_module = ext_loader.load_ext(
 class MultiScaleDeformableAttnFunction(Function):
 
     @staticmethod
+    @bf16_compatible('value')
     def forward(ctx, value: torch.Tensor, value_spatial_shapes: torch.Tensor,
                 value_level_start_index: torch.Tensor,
                 sampling_locations: torch.Tensor,
@@ -75,6 +77,7 @@ class MultiScaleDeformableAttnFunction(Function):
 
     @staticmethod
     @once_differentiable
+    @bf16_compatible('grad_output')
     def backward(ctx, grad_output: torch.Tensor) -> tuple:
         """GPU/MLU version of backward function.
 

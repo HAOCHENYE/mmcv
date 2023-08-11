@@ -6,6 +6,7 @@ from mmengine.utils import deprecated_api_warning
 from torch import Tensor
 
 from ..utils import ext_loader
+from .utils import bf16_compatible
 
 ext_module = ext_loader.load_ext(
     '_ext', ['nms', 'softnms', 'nms_match', 'nms_rotated', 'nms_quadri'])
@@ -261,6 +262,7 @@ def batched_nms(boxes: Tensor,
         - keep (Tensor): The indices of remaining boxes in input
           boxes.
     """
+    boxes, scores = boxes.float(), scores.float()
     # skip nms when nms_cfg is None
     if nms_cfg is None:
         scores, inds = scores.sort(descending=True)

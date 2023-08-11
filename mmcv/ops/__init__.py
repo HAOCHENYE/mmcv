@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from torch.nn.functional import interpolate
+
 from .active_rotated_filter import active_rotated_filter
 from .assign_score_withk import assign_score_withk
 from .ball_query import ball_query
@@ -72,7 +74,10 @@ from .three_interpolate import three_interpolate
 from .three_nn import three_nn
 from .tin_shift import TINShift, tin_shift
 from .upfirdn2d import filter2d, upfirdn2d, upsample2d
+from .utils import bf16_compatible
 from .voxelize import Voxelization, voxelization
+
+interpolate = bf16_compatible('input')(interpolate)
 
 __all__ = [
     'bbox_overlaps', 'CARAFE', 'CARAFENaive', 'CARAFEPack', 'carafe',
@@ -107,5 +112,6 @@ __all__ = [
     'min_area_polygons', 'active_rotated_filter', 'convex_iou', 'convex_giou',
     'diff_iou_rotated_2d', 'diff_iou_rotated_3d', 'chamfer_distance',
     'PrRoIPool', 'prroi_pool', 'bias_act', 'filtered_lrelu', 'conv2d',
-    'conv_transpose2d', 'filter2d', 'upsample2d', 'BezierAlign', 'bezier_align'
+    'conv_transpose2d', 'filter2d', 'upsample2d', 'BezierAlign', 'bezier_align',
+    'interpolate'
 ]
