@@ -266,7 +266,8 @@ class MultiScaleDeformableAttention(BaseModule):
         for i in range(self.num_points):
             grid_init[:, :, i, :] *= i + 1
 
-        self.sampling_offsets.bias.data = grid_init.view(-1)
+        with torch.no_grad():
+            self.sampling_offsets.bias.copy_(grid_init.view(-1))
         constant_init(self.attention_weights, val=0., bias=0.)
         xavier_init(self.value_proj, distribution='uniform', bias=0.)
         xavier_init(self.output_proj, distribution='uniform', bias=0.)
