@@ -20,7 +20,7 @@ def bf16_compatible(*target_args: Tuple[str]) -> bool:
                     return True
             return False
         elif isinstance(data, torch.Tensor):
-            return isinstance(data.dtype, torch.bfloat16)
+            return data.dtype is torch.bfloat16
         else:
             return False
 
