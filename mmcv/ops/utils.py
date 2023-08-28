@@ -41,7 +41,7 @@ def bf16_compatible(*target_args: Tuple[str]) -> bool:
                     kwargs[arg_name] = apply_to(
                         kwargs[arg_name], lambda x: isinstance(
                             x, torch.Tensor) and x.dtype == torch.bfloat16,
-                        lambda x: x.half())
+                        lambda x: x.float())
                 else:
                     args[arg_index] = apply_to(
                         args[arg_index], lambda x: isinstance(x, torch.Tensor)
